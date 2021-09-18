@@ -1,0 +1,30 @@
+services:
+  daprmqttcs:
+    container_name: daprmqttcs
+    image: ${DOCKER_REGISTRY-}daprmqttcs
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  daprmqttcs-dapr:
+    container_name: daprmqttcs-dapr
+    image: "daprio/daprd:1.2.0"
+    network_mode: "service:daprmqttcs"
+    command: ["./daprd",
+      "-app-id", "daprmqttcs",
+      "-app-port", "80",
+      "-components-path", "/components"
+      ]
+    volumes:
+      - "./Components/:/components"
+    depends_on:
+      - daprmqttcs
+
+  mosquitto:
+    image: eclipse-mosquitto:1.6.9
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+    - ./mqtt:/mosquitto/config

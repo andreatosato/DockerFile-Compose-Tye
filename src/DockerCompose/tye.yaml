@@ -1,0 +1,17 @@
+#TYE NOT WORK WITH DAPR
+
+name: Mqtt
+extensions:
+- name: dapr
+  log-level: debug
+  components-path: "./Components/"
+services:
+- name: MqttSubscriber
+  project: DaprMqttCS.csproj
+- name: mosquitto
+  image: eclipse-mosquitto
+  bindings:
+    - port: 1883
+  volumes:
+    - source: ./mqtt/
+      target: /mosquitto/config/
